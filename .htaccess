@@ -1,0 +1,21 @@
+# Hojaldras "La Ordaz" - Configuración de Apache
+# Evita listados de directorios y bloquea archivos sensibles.
+
+Options -Indexes
+DirectoryIndex index.php index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Bloquea el acceso a archivos y carpetas ocultas (.git, .env, etc.)
+    RewriteRule "(^|/)\." - [F]
+</IfModule>
+
+<FilesMatch "^(\.env.*|\.git.*|composer\.(json|lock)|package(-lock)?\.json|.*\.(sql|md|log|ini|bak|old))$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
